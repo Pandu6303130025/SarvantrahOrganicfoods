@@ -1,122 +1,130 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import Image from "next/image";
-import { ShoppingCart, Menu, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { ShoppingCart, Menu, X, Search } from "lucide-react";
+import { useState } from "react";
 import { useCartItemCount } from "@/lib/cart-store";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/products", label: "Products" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/contact", label: "Contact" },
-];
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const itemCount = useCartItemCount();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchValue.trim()) return;
+
+    router.push(`/products?search=${encodeURIComponent(searchValue)}`);
+
+    setShowSearch(false);
+    setMobileMenuOpen(false);
+    setSearchValue("");
+  };
 
   return (
-    <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        scrolled
-          ? "bg-card/95 shadow-lg backdrop-blur-md"
-          : "bg-card shadow-sm"
-      }`}
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-        {/* Logo */}
-       <Link href="/" className="flex items-center">
-  <Image
-    src="https://res.cloudinary.com/dd4oiwnep/image/upload/v1770978869/Logo_For_Sarvantrah_ivvgsa.png"
-    alt="Sarvantrah Organics Logo"
-    width={160}
-    height={160}
-    priority
-    className="h-12 w-auto sm:h-16 md:h-20 object-contain"
-  />
-</Link>
+    <header className="sticky top-0 z-50 w-full bg-black text-white">
 
-        {/* Desktop Nav */}
-        <nav className="hidden items-center gap-1 md:flex">
-          {navLinks.map((link) => {
-            const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-foreground hover:bg-primary/10 hover:text-primary"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
+      <div className="relative mx-auto flex max-w-7xl items-center px-6 py-4">
 
-        {/* Cart + Mobile Menu */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/cart"
-            className="relative flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
+        {/* LEFT */}
+        <div className="flex items-center gap-6">
+          <button
+            onClick={() => {
+              setMobileMenuOpen(!mobileMenuOpen);
+              setShowSearch(false);
+            }}
+            className="md:hidden"
           >
-            <ShoppingCart className="h-5 w-5" />
+            {mobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </button>
+
+          {/* DESKTOP NAV */}
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">
+            <Link href="/">Home</Link>
+            <Link href="/products">Products</Link>
+            <Link href="/about">Our Story</Link>
+          </div>
+        </div>
+
+        {/* CENTER LOGO */}
+        <div className="absolute left-1/2 -translate-x-1/2">
+          <Link
+            href="/"
+            className="text-2xl md:text-3xl font-semibold tracking-[0.3em]"
+          >
+            ZYVA
+          </Link>
+        </div>
+
+        {/* RIGHT */}
+        <div className="ml-auto flex items-center gap-6">
+
+          {/* 🔥 Search now visible on ALL screens */}
+          <button
+            onClick={() => {
+              setShowSearch(!showSearch);
+              setMobileMenuOpen(false);
+            }}
+          >
+            <Search className="h-5 w-5" />
+          </button>
+
+          <Link href="/cart" className="relative">
+            <ShoppingCart className="h-6 w-6" />
             {itemCount > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground">
+              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-bold text-black">
                 {itemCount}
               </span>
             )}
-            <span className="hidden sm:inline">Cart</span>
           </Link>
-
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="rounded-lg p-2 text-foreground transition-colors hover:bg-muted md:hidden"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="border-t border-border bg-card md:hidden">
-          <nav className="mx-auto flex max-w-7xl flex-col px-4 py-3">
-            {navLinks.map((link) => {
-              const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`rounded-lg px-4 py-3 text-base font-medium transition-colors ${
-                    isActive
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-foreground hover:bg-primary/10 hover:text-primary"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
+      {/* 🔥 SEARCH BAR (Works in mobile + desktop) */}
+      {showSearch && (
+        <div className="border-t border-gray-800 bg-black">
+          <form
+            onSubmit={handleSearch}
+            className="mx-auto max-w-7xl px-6 py-4"
+          >
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              className="w-full rounded-lg bg-white px-4 py-3 text-black focus:outline-none"
+              autoFocus
+            />
+          </form>
         </div>
       )}
+
+      {/* MOBILE MENU */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-gray-800 bg-black">
+          <div className="flex flex-col px-6 py-4 gap-4 text-sm tracking-wide">
+            <Link href="/" onClick={() => setMobileMenuOpen(false)}>
+              Home
+            </Link>
+            <Link href="/products" onClick={() => setMobileMenuOpen(false)}>
+              Products
+            </Link>
+            <Link href="/about" onClick={() => setMobileMenuOpen(false)}>
+              Our Story
+            </Link>
+          </div>
+        </div>
+      )}
+
     </header>
   );
 }

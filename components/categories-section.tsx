@@ -1,55 +1,124 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { categories } from "@/lib/data";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef } from "react";
 
 export function CategoriesSection() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: "left" | "right") => {
+    if (!scrollRef.current) return;
+    const scrollAmount = 320;
+    scrollRef.current.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <section className="bg-background py-16 sm:py-20">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="mb-10 text-center sm:mb-14">
-          <span className="mb-2 inline-block rounded-full bg-primary/10 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
-            Our Categories
-          </span>
-          <h2 className="mt-3 font-serif text-2xl font-bold text-foreground sm:text-3xl md:text-4xl text-balance">
-            Explore Our Millet Collection
+    <section className="bg-black py-20 text-white">
+      <div className="mx-auto max-w-7xl px-6">
+
+        {/* Header */}
+        <div className="mb-12 text-center">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-wide">
+            Explore Our Collection
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
-            From crunchy chikkis to soft chapathis, discover the complete range of
-            our nutritious millet-based products.
+          <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-gray-400">
+            Discover our premium millet-based creations crafted with purity,
+            tradition, and modern nutrition.
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        {/* Desktop Horizontal Slider */}
+        <div className="relative hidden md:block">
+
+          {/* Left Arrow */}
+          <button
+            onClick={() => scroll("left")}
+            className="absolute -left-5 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white p-3 text-black shadow-lg"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          {/* Scroll Container */}
+          <div
+            ref={scrollRef}
+            className="flex gap-6 overflow-hidden scroll-smooth"
+          >
+            {categories.map((cat) => (
+              <Link
+                key={cat.slug}
+                href={`/products?category=${cat.slug}`}
+                className="group relative min-w-[300px] flex-shrink-0 overflow-hidden rounded-xl"
+              >
+                <div className="relative h-[320px] w-full overflow-hidden">
+                  <Image
+                    src={cat.image}
+                    alt={cat.name}
+                    fill
+                    className="object-cover transition-transform duration-[4000ms] ease-linear group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-all duration-300" />
+                </div>
+
+                <div className="absolute inset-0 flex flex-col justify-end p-6">
+                  <h3 className="text-xl font-semibold tracking-wide">
+                    {cat.name}
+                  </h3>
+
+                  <p className="mt-2 text-sm text-gray-300 line-clamp-2">
+                    {cat.description}
+                  </p>
+
+                  <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-white group-hover:underline">
+                    View Collection
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Right Arrow */}
+          <button
+            onClick={() => scroll("right")}
+            className="absolute -right-5 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white p-3 text-black shadow-lg"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Mobile 2 Grid Layout */}
+        <div className="grid grid-cols-2 gap-4 md:hidden">
           {categories.map((cat) => (
             <Link
               key={cat.slug}
               href={`/products?category=${cat.slug}`}
-              className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all hover:shadow-lg"
+              className="group relative overflow-hidden rounded-xl"
             >
-              <div className="relative aspect-[4/3] overflow-hidden">
+              <div className="relative h-[200px] w-full overflow-hidden">
                 <Image
                   src={cat.image}
                   alt={cat.name}
                   fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-foreground/20 transition-colors group-hover:bg-foreground/30" />
+                <div className="absolute inset-0 bg-black/50" />
               </div>
-              <div className="flex flex-1 flex-col items-start gap-1 p-4">
-                <h3 className="font-semibold text-foreground text-sm sm:text-base">
+
+              <div className="absolute inset-0 flex flex-col justify-end p-4">
+                <h3 className="text-sm font-semibold">
                   {cat.name}
                 </h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">
-                  {cat.description}
-                </p>
-                <span className="mt-auto flex items-center gap-1 pt-2 text-xs font-medium text-primary transition-colors group-hover:text-secondary">
-                  Shop Now <ArrowRight className="h-3.5 w-3.5" />
-                </span>
               </div>
             </Link>
           ))}
         </div>
+
       </div>
     </section>
   );

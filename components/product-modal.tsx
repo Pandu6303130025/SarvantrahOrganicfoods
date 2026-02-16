@@ -32,94 +32,110 @@ export function ProductModal({ product, open, onClose }: ProductModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/60 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-card shadow-2xl"
+        className="relative w-full max-w-3xl bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* CLOSE BUTTON */}
         <button
           onClick={onClose}
-          className="absolute right-3 top-3 z-10 rounded-full bg-card/80 p-2 shadow-sm transition-colors hover:bg-muted"
-          aria-label="Close"
+          className="absolute right-5 top-5 z-10 text-gray-500 hover:text-black transition"
         >
-          <X className="h-5 w-5 text-foreground" />
+          <X className="h-6 w-6" />
         </button>
 
-        <div className="flex flex-col sm:flex-row">
-          {/* Image */}
-          <div className="relative aspect-square w-full sm:w-1/2">
+        <div className="flex flex-col md:flex-row">
+
+          {/* IMAGE SECTION */}
+          <div className="relative aspect-square w-full md:w-1/2 bg-white">
             <Image
               src={product.image}
               alt={product.name}
               fill
-              className="object-cover sm:rounded-l-2xl"
+              className="object-contain p-8"
             />
+
             {!isAvailable && (
-              <div className="absolute inset-0 flex items-center justify-center bg-foreground/40">
-                <span className="rounded-full bg-secondary px-4 py-2 text-sm font-bold text-secondary-foreground">
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                <span className="bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wide text-black">
                   Coming Soon
                 </span>
               </div>
             )}
           </div>
 
-          {/* Details */}
-          <div className="flex flex-1 flex-col gap-4 p-5 sm:p-6">
+          {/* DETAILS SECTION */}
+          <div className="flex flex-1 flex-col justify-between p-8">
+
+            {/* TOP CONTENT */}
             <div>
-              <span className="mb-1 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+
+              <p className="text-xs uppercase tracking-wider text-gray-500">
                 {product.category}
-              </span>
-              <h2 className="mt-2 font-serif text-xl font-bold text-foreground sm:text-2xl">
+              </p>
+
+              <h2 className="mt-3 text-2xl md:text-3xl font-semibold text-black leading-snug">
                 {product.name}
               </h2>
-            </div>
 
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              {product.description}
-            </p>
-
-            <div className="rounded-lg bg-accent p-3">
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-primary">
-                  Rs.{product.price}
-                </span>
-                <span className="text-sm text-muted-foreground">per box</span>
+              <div className="mt-6 border-t border-gray-200 pt-6">
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {product.description}
+                </p>
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">
-                + Rs.{product.additionalCharges} for GST & Delivery charges
-              </p>
-              <p className="mt-1 text-xs font-medium text-secondary">
-                Buy 4+ boxes (above Rs.{FREE_DELIVERY_THRESHOLD}) and get FREE
-                delivery!
-              </p>
+
+              {/* PRICE SECTION */}
+              <div className="mt-8">
+                <div className="flex items-end gap-3">
+                  <span className="text-3xl font-bold text-black">
+                    ₹ {product.price}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    per box
+                  </span>
+                </div>
+
+                <p className="mt-2 text-xs text-gray-500">
+                  + ₹{product.additionalCharges} (GST & Delivery)
+                </p>
+
+                <p className="mt-2 text-xs text-gray-600">
+                  Buy 4+ boxes (above ₹{FREE_DELIVERY_THRESHOLD}) and get FREE delivery
+                </p>
+              </div>
             </div>
 
-            {isAvailable ? (
-              inCart ? (
-                <button
-                  disabled
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary/10 px-4 py-3 text-sm font-semibold text-primary"
-                >
-                  <Check className="h-5 w-5" />
-                  Added to Cart
-                </button>
+            {/* ACTION BUTTON */}
+            <div className="mt-10">
+              {isAvailable ? (
+                inCart ? (
+                  <button
+                    disabled
+                    className="w-full border border-black py-4 text-sm font-semibold text-black flex items-center justify-center gap-2"
+                  >
+                    <Check className="h-5 w-5" />
+                    Added to Cart
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => addToCart(product)}
+                    className="w-full bg-black py-4 text-sm font-semibold text-white transition hover:bg-gray-800 flex items-center justify-center gap-2"
+                  >
+                    <ShoppingCart className="h-5 w-5" />
+                    Add to Cart
+                  </button>
+                )
               ) : (
-                <button
-                  onClick={() => addToCart(product)}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  Add to Cart
-                </button>
-              )
-            ) : (
-              <div className="flex w-full items-center justify-center gap-2 rounded-lg bg-muted px-4 py-3 text-sm font-medium text-muted-foreground">
-                <Clock className="h-5 w-5" />
-                Coming Soon
-              </div>
-            )}
+                <div className="w-full border border-gray-300 py-4 text-sm text-gray-500 flex items-center justify-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  Coming Soon
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       </div>

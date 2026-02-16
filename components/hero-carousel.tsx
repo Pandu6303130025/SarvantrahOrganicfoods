@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { heroSlides } from "@/lib/data";
 
 export function HeroCarousel() {
@@ -13,51 +12,62 @@ export function HeroCarousel() {
     setCurrent((prev) => (prev + 1) % heroSlides.length);
   }, []);
 
-  const prev = useCallback(() => {
-    setCurrent((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
-  }, []);
-
   useEffect(() => {
-    const timer = setInterval(next, 4500);
+    const timer = setInterval(next, 3000);
     return () => clearInterval(timer);
   }, [next]);
 
   return (
-    <section className="relative w-full overflow-hidden" aria-label="Hero carousel">
-      <div className="relative h-[50vh] min-h-[400px] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]">
+    <section className="relative w-full overflow-hidden bg-black">
+      <div className="relative h-[60vh] min-h-[450px] sm:h-[70vh] md:h-[80vh]">
+
         {heroSlides.map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-700 ${
-              index === current ? "opacity-100" : "opacity-0"
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              index === current ? "opacity-100 z-20" : "opacity-0 z-10"
             }`}
           >
-            <Image
-              src={slide.image}
-              alt={slide.title}
-              fill
-              className="object-cover"
-              priority={index === 0}
-            />
-            <div className="absolute inset-0 bg-foreground/50" />
-            <div className="absolute inset-0 flex items-center justify-center px-4">
-              <div className="mx-auto max-w-3xl text-center">
-                <h1 className="mb-4 font-serif text-3xl font-bold text-card sm:text-4xl md:text-5xl lg:text-6xl text-balance">
+            {/* Image with Zoom Effect */}
+            <div
+              className={`absolute inset-0 transition-transform duration-[6000ms] ease-linear ${
+                index === current ? "scale-110" : "scale-100"
+              }`}
+            >
+              <Image
+                src={slide.image}
+                alt={slide.title}
+                fill
+                priority={index === 0}
+                className="object-cover"
+              />
+            </div>
+
+            {/* Dark Overlay */}
+            <div className="absolute inset-0 bg-black/60" />
+
+            {/* Content */}
+            <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
+              <div className="max-w-3xl">
+                <h1 className="mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-wide text-white">
                   {slide.title}
                 </h1>
-                <p className="mb-8 text-base text-card/90 sm:text-lg md:text-xl text-pretty">
+
+                <p className="mb-8 text-sm sm:text-base md:text-lg text-gray-300">
                   {slide.subtitle}
                 </p>
-                <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+
+                <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
                   <Link
                     href="/products"
-                    className="inline-flex items-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 sm:px-8 sm:text-base"
+                    className="rounded-md bg-white px-8 py-3 text-sm font-semibold text-black transition hover:bg-gray-200"
                   >
                     Shop Now
                   </Link>
+
                   <Link
                     href="/about"
-                    className="inline-flex items-center rounded-lg border-2 border-card bg-card/10 px-6 py-3 text-sm font-semibold text-card backdrop-blur-sm transition-colors hover:bg-card/20 sm:px-8 sm:text-base"
+                    className="rounded-md border border-white px-8 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black"
                   >
                     Learn More
                   </Link>
@@ -66,36 +76,20 @@ export function HeroCarousel() {
             </div>
           </div>
         ))}
+
       </div>
 
-      {/* Controls */}
-      <button
-        onClick={prev}
-        className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-card/20 p-2 text-card backdrop-blur-sm transition-colors hover:bg-card/40 sm:left-4 sm:p-3"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
-      </button>
-      <button
-        onClick={next}
-        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-card/20 p-2 text-card backdrop-blur-sm transition-colors hover:bg-card/40 sm:right-4 sm:p-3"
-        aria-label="Next slide"
-      >
-        <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
-      </button>
-
-      {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+      {/* Minimal Dots */}
+      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-3">
         {heroSlides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrent(index)}
-            className={`h-2.5 rounded-full transition-all ${
+            className={`h-2 rounded-full transition-all duration-300 ${
               index === current
-                ? "w-8 bg-card"
-                : "w-2.5 bg-card/50 hover:bg-card/70"
+                ? "w-8 bg-white"
+                : "w-2 bg-white/40 hover:bg-white/70"
             }`}
-            aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>

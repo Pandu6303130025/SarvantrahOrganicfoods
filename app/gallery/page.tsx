@@ -10,97 +10,106 @@ export default function GalleryPage() {
 
   const openLightbox = (idx: number) => setLightboxIndex(idx);
   const closeLightbox = () => setLightboxIndex(null);
+
   const prevImage = () =>
     setLightboxIndex((prev) =>
-      prev !== null ? (prev - 1 + galleryImages.length) % galleryImages.length : null
+      prev !== null
+        ? (prev - 1 + galleryImages.length) % galleryImages.length
+        : null
     );
+
   const nextImage = () =>
     setLightboxIndex((prev) =>
       prev !== null ? (prev + 1) % galleryImages.length : null
     );
 
   return (
-    <>
-      {/* Hero */}
-      <section className="bg-primary py-16 sm:py-20">
-        <div className="mx-auto max-w-4xl px-4 text-center">
-          <span className="mb-3 inline-block rounded-full bg-primary-foreground/20 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-primary-foreground">
-            Gallery
-          </span>
-          <h1 className="mt-3 font-serif text-3xl font-bold text-primary-foreground sm:text-4xl md:text-5xl text-balance">
-            Our Visual Journey
-          </h1>
-          <p className="mx-auto mt-4 max-w-xl text-sm text-primary-foreground/80 sm:text-base">
-            A glimpse into the world of Sarvantrah Organics - from our farms to your table.
-          </p>
-        </div>
+    <div className="bg-white">
+
+      {/* ================= HEADER ================= */}
+      <section className="py-20 text-center">
+        <h1 className="text-4xl sm:text-5xl font-bold text-black">
+          Gallery
+        </h1>
+        <div className="mx-auto mt-4 h-[2px] w-16 bg-black" />
+        <p className="mx-auto mt-6 max-w-xl text-gray-600">
+          A glimpse into our journey — from pure ingredients to premium products.
+        </p>
       </section>
 
-      {/* Gallery Grid */}
-      <section className="py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
+      {/* ================= GALLERY GRID ================= */}
+      <section className="pb-20">
+        <div className="mx-auto max-w-7xl px-6">
+
+          <div className="grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {galleryImages.map((image, idx) => (
               <div
                 key={idx}
-                className="mb-4 cursor-pointer overflow-hidden rounded-xl break-inside-avoid"
+                className="group relative cursor-pointer overflow-hidden bg-gray-100"
                 onClick={() => openLightbox(idx)}
               >
-                <div className="group relative">
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    width={600}
-                    height={400}
-                    className="w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 flex items-end bg-foreground/0 p-4 transition-colors group-hover:bg-foreground/30">
-                    <p className="translate-y-4 text-sm font-medium text-card opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">
-                      {image.alt}
-                    </p>
-                  </div>
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={600}
+                  height={600}
+                  className="aspect-square w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/40" />
+
+                <div className="absolute bottom-4 left-4 right-4 translate-y-6 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  <p className="text-sm font-medium text-white">
+                    {image.alt}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
+
         </div>
       </section>
 
-      {/* Lightbox */}
+      {/* ================= LIGHTBOX ================= */}
       {lightboxIndex !== null && (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-foreground/90 p-4"
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/90 p-6"
           onClick={closeLightbox}
         >
+          {/* Close */}
           <button
             onClick={closeLightbox}
-            className="absolute right-4 top-4 rounded-full bg-card/20 p-2 text-card transition-colors hover:bg-card/40"
-            aria-label="Close lightbox"
+            className="absolute top-6 right-6 text-white hover:opacity-70"
           >
-            <X className="h-6 w-6" />
+            <X className="h-7 w-7" />
           </button>
+
+          {/* Previous */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               prevImage();
             }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-card/20 p-2 text-card transition-colors hover:bg-card/40"
-            aria-label="Previous image"
+            className="absolute left-6 top-1/2 -translate-y-1/2 text-white hover:opacity-70"
           >
-            <ChevronLeft className="h-6 w-6" />
+            <ChevronLeft className="h-8 w-8" />
           </button>
+
+          {/* Next */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               nextImage();
             }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-card/20 p-2 text-card transition-colors hover:bg-card/40"
-            aria-label="Next image"
+            className="absolute right-6 top-1/2 -translate-y-1/2 text-white hover:opacity-70"
           >
-            <ChevronRight className="h-6 w-6" />
+            <ChevronRight className="h-8 w-8" />
           </button>
+
+          {/* Image */}
           <div
-            className="relative max-h-[80vh] max-w-4xl overflow-hidden rounded-xl"
+            className="relative max-w-5xl"
             onClick={(e) => e.stopPropagation()}
           >
             <Image
@@ -108,16 +117,20 @@ export default function GalleryPage() {
               alt={galleryImages[lightboxIndex].alt}
               width={1200}
               height={800}
-              className="h-auto max-h-[80vh] w-auto object-contain"
+              className="max-h-[80vh] w-auto object-contain"
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-foreground/60 p-3 text-center">
-              <p className="text-sm text-card">
-                {galleryImages[lightboxIndex].alt} ({lightboxIndex + 1}/{galleryImages.length})
+
+            <div className="mt-6 text-center text-white">
+              <p className="text-sm tracking-wide">
+                {galleryImages[lightboxIndex].alt}
+              </p>
+              <p className="mt-1 text-xs text-gray-400">
+                {lightboxIndex + 1} / {galleryImages.length}
               </p>
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

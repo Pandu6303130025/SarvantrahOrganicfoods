@@ -1,10 +1,11 @@
-import { aboutContent } from "@/lib/data";
 import Image from "next/image";
 import { Leaf, Heart, Globe, Award } from "lucide-react";
+import { aboutContent } from "@/lib/data";
 
 export const metadata = {
-  title: "About Us | Sarvantrah Organics",
-  description: "Learn about Sarvantrah Organic Foods - a purpose-driven millet-based FMCG company making nutritious food affordable and accessible.",
+  title: "About Us | Zyva",
+  description:
+    "Learn about Zyva – a purpose-driven millet-based brand making nutritious food affordable and accessible.",
 };
 
 const icons = [Leaf, Heart, Globe, Award];
@@ -12,83 +13,137 @@ const icons = [Leaf, Heart, Globe, Award];
 export default function AboutPage() {
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-primary py-16 sm:py-24">
-        <div className="absolute inset-0 opacity-10">
-          <Image
-            src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=1400&h=600&fit=crop"
-            alt=""
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="relative mx-auto max-w-4xl px-4 text-center">
-          <span className="mb-3 inline-block rounded-full bg-primary-foreground/20 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-primary-foreground">
-            Our Story
-          </span>
-          <h1 className="mt-3 font-serif text-3xl font-bold text-primary-foreground sm:text-4xl md:text-5xl text-balance">
-            {aboutContent.title}
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-sm text-primary-foreground/80 sm:text-base">
-            From Andhra Pradesh to your table - bringing the ancient goodness of millets to modern kitchens.
-          </p>
-        </div>
-      </section>
+      {/* ================= HERO SECTION ================= */}
+      <section className="bg-white py-24">
+  <div className="mx-auto max-w-4xl px-6 text-center">
 
-      {/* About Content */}
-      <section className="py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-16">
-            <div className="flex-1">
-              <div className="prose prose-sm max-w-none sm:prose-base">
-                {aboutContent.description.split("\n\n").map((paragraph, idx) => (
-                  <p
-                    key={idx}
-                    className="mb-4 text-sm leading-relaxed text-muted-foreground sm:text-base"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </div>
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl lg:w-96">
-              <Image
-                src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&h=750&fit=crop"
-                alt="Millet farming in India"
-                fill
-                className="object-cover"
-              />
-            </div>
+    <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-wide text-black">
+      About Us
+    </h1>
+
+    <div className="mx-auto mt-6 h-[2px] w-16 bg-black" />
+
+    <p className="mt-8 text-base sm:text-lg text-gray-600 leading-relaxed">
+      Discover our journey, our values, and our commitment to
+      bringing healthy millet-based nutrition to every home.
+    </p>
+
+  </div>
+</section>
+
+
+      {/* ================= HOW IT STARTED ================= */}
+      <section className="relative overflow-hidden py-24">
+        <Image
+          src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=1600&h=900&fit=crop"
+          alt="Millets background"
+          fill
+          className="object-cover"
+        />
+
+        {/* Blur + Dark Overlay */}
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+        <div className="relative mx-auto max-w-5xl px-6 text-center text-white">
+          <h2 className="text-4xl sm:text-5xl font-bold">
+            How It Started!!!
+          </h2>
+
+          <div className="mt-10 space-y-6 text-gray-200 leading-relaxed text-base sm:text-lg">
+            <p>
+              Zyva is committed to making healthy millet nutritious products
+              at affordable prices. With a clear vision to promote better
+              eating habits, Zyva combines traditional millet goodness
+              with modern taste and quality standards.
+            </p>
+
+            <p>
+              The brand supports a healthier generation by replacing
+              chemical-laden snacks with natural, wholesome alternatives.
+              By sourcing quality ingredients and maintaining high
+              production standards, Zyva ensures both taste and nutrition.
+            </p>
+
+            <p>
+              Zyva strives to create awareness about millets, empower
+              farmers, and build a sustainable future through healthy,
+              budget-friendly snacking options.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Values */}
-      <section className="bg-accent/50 py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-10 text-center sm:mb-14">
-            <span className="mb-2 inline-block rounded-full bg-primary/10 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
-              Our Values
-            </span>
-            <h2 className="mt-3 font-serif text-2xl font-bold text-foreground sm:text-3xl md:text-4xl text-balance">
+      {/* ================= WHAT WE DO ================= */}
+      <section className="relative overflow-hidden py-24">
+        <Image
+          src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=1600&h=900&fit=crop"
+          alt="Production background"
+          fill
+          className="object-cover"
+        />
+
+        {/* Blur + Light Overlay */}
+        <div className="absolute inset-0 bg-white/85 backdrop-blur-sm" />
+
+        <div className="relative mx-auto max-w-5xl px-6 text-center text-black">
+          <h2 className="text-4xl sm:text-5xl font-bold">
+            What We Do.....
+          </h2>
+
+          <div className="mt-10 space-y-6 text-gray-700 leading-relaxed text-base sm:text-lg">
+            <p>
+              We manufacture high-quality millet-based snacks that are
+              hygienic, nutritious, and affordable for everyday consumers.
+            </p>
+
+            <p>
+              Our focus is on using pure, carefully selected ingredients
+              to create snacks that are both healthy and delicious. We
+              follow strict quality standards in every stage of production
+              to ensure safety, freshness, and taste.
+            </p>
+
+            <p>
+              Customer satisfaction is at the heart of our work. We
+              continuously improve our products to meet evolving customer
+              expectations.
+            </p>
+
+            <p>
+              By combining nutrition, hygiene, and affordability, Zyva
+              makes healthy snacking easy and accessible for everyone
+              while building lasting trust.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= VALUES SECTION ================= */}
+      <section className="bg-gray-50 py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-14 text-center">
+            <h2 className="text-3xl sm:text-4xl font-semibold text-black">
               What Drives Us
             </h2>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {aboutContent.values.map((value, idx) => {
               const Icon = icons[idx];
               return (
                 <div
                   key={value.title}
-                  className="flex flex-col items-center rounded-xl border border-border bg-card p-6 text-center shadow-sm transition-shadow hover:shadow-md"
+                  className="flex flex-col items-center bg-white p-8 text-center shadow-sm transition hover:shadow-md"
                 >
-                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-                    <Icon className="h-7 w-7 text-primary" />
+                  <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-black/10">
+                    <Icon className="h-7 w-7 text-black" />
                   </div>
-                  <h3 className="mb-2 text-base font-semibold text-foreground">
+
+                  <h3 className="mb-3 text-base font-semibold text-black">
                     {value.title}
                   </h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
+
+                  <p className="text-sm text-gray-600 leading-relaxed">
                     {value.description}
                   </p>
                 </div>
@@ -98,19 +153,19 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Mission */}
-      <section className="py-16 sm:py-20">
-        <div className="mx-auto max-w-4xl px-4 text-center">
-          <span className="mb-2 inline-block rounded-full bg-secondary/10 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-secondary">
-            Our Mission
-          </span>
-          <h2 className="mt-3 font-serif text-2xl font-bold text-foreground sm:text-3xl text-balance">
+      {/* ================= MISSION ================= */}
+      <section className="bg-black py-20 text-white m-5">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <h2 className="text-3xl sm:text-4xl font-semibold">
             Nutritious Food is a Daily Right, Not a Luxury
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-            We believe every family deserves access to wholesome, chemical-free food at affordable prices.
-            Through sustainable farming, ethical sourcing, and innovative millet-based products,
-            we are building a future where healthy snacking becomes the global standard.
+
+          <p className="mt-6 text-gray-300 leading-relaxed text-base sm:text-lg">
+            We believe every family deserves access to wholesome,
+            chemical-free food at affordable prices. Through sustainable
+            farming, ethical sourcing, and innovative millet-based
+            products, Zyva is building a future where healthy snacking
+            becomes the global standard.
           </p>
         </div>
       </section>

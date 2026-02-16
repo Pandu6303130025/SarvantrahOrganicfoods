@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { products, categories } from "@/lib/data";
@@ -8,19 +8,33 @@ import { ProductCard } from "./product-card";
 
 export function ProductsPageContent() {
   const searchParams = useSearchParams();
-  const initialCategory = searchParams.get("category") || "all";
 
+  // Get values from URL
+  const initialCategory = searchParams.get("category") || "all";
+  const initialSearch = searchParams.get("search") || "";
+
+  // State
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [showFilters, setShowFilters] = useState(false);
 
+  // 🔥 Sync search input when URL changes
+  useEffect(() => {
+    setSearchQuery(initialSearch);
+  }, [initialSearch]);
+
+  // 🔥 Filter logic
   const filteredProducts = useMemo(() => {
     let filtered = products;
 
+    // Filter by category
     if (selectedCategory !== "all") {
-      filtered = filtered.filter((p) => p.categorySlug === selectedCategory);
+      filtered = filtered.filter(
+        (p) => p.categorySlug === selectedCategory
+      );
     }
 
+    // Filter by search
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -37,133 +51,95 @@ export function ProductsPageContent() {
   const availableCount = filteredProducts.filter(
     (p) => p.status === "available"
   ).length;
+
   const comingSoonCount = filteredProducts.filter(
     (p) => p.status === "coming-soon"
   ).length;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
-      {/* Page Header */}
-      <div className="mb-8 text-center sm:mb-12">
-        <h1 className="font-serif text-3xl font-bold text-foreground sm:text-4xl md:text-5xl">
-          Our Products
-        </h1>
-        <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
-          Explore our complete range of premium millet-based products. All products
-          at Rs.250 + Rs.35 (GST & Delivery).
-        </p>
-      </div>
+    <div className="bg-white">
+      <div className="mx-auto max-w-7xl px-6 py-16">
 
-      {/* Search & Filter Bar */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        {/* Search */}
-        <div className="relative flex-1 sm:max-w-sm">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-border bg-card py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              aria-label="Clear search"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
+        {/* ================= HEADER ================= */}
+        <div className="mb-14 text-center">
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-wide text-black">
+            Our Products
+          </h1>
+          <div className="mx-auto mt-4 h-[2px] w-16 bg-black" />
+          <p className="mx-auto mt-6 max-w-xl text-gray-600 text-base">
+            Explore our premium millet-based collection crafted for
+            nutrition, taste, and affordability.
+          </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">
-            {filteredProducts.length} products ({availableCount} available, {comingSoonCount} coming soon)
-          </span>
+        {/* ================= SEARCH + FILTER ================= */}
+        <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+
+          {/* Search */}
+          <div className="relative w-full sm:max-w-sm">
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full border border-gray-300 bg-white py-3 pl-10 pr-10 text-sm text-black placeholder-gray-400 focus:border-black focus:outline-none"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
+          {/* Product Count */}
+          <div className="text-sm text-gray-500">
+            {filteredProducts.length} Products
+            {" "}({availableCount} Available • {comingSoonCount} Coming Soon)
+          </div>
+
+          {/* Mobile Filter Button */}
           <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted sm:hidden"
+            onClick={() => setShowFilters(true)}
+            className="flex items-center gap-2 border border-black px-4 py-2 text-sm font-medium text-black sm:hidden"
           >
             <SlidersHorizontal className="h-4 w-4" />
             Filters
           </button>
         </div>
-      </div>
 
-      <div className="flex gap-8">
-        {/* Desktop Category Sidebar */}
-        <aside className="hidden w-56 flex-shrink-0 sm:block">
-          <div className="sticky top-24 rounded-xl border border-border bg-card p-4 shadow-sm">
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-foreground">
-              Categories
-            </h3>
-            <nav className="flex flex-col gap-1">
-              <button
-                onClick={() => setSelectedCategory("all")}
-                className={`rounded-lg px-3 py-2 text-left text-sm transition-colors ${
-                  selectedCategory === "all"
-                    ? "bg-primary font-medium text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                All Products
-              </button>
-              {categories.map((cat) => (
-                <button
-                  key={cat.slug}
-                  onClick={() => setSelectedCategory(cat.slug)}
-                  className={`rounded-lg px-3 py-2 text-left text-sm transition-colors ${
-                    selectedCategory === cat.slug
-                      ? "bg-primary font-medium text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                >
-                  {cat.name}
-                </button>
-              ))}
-            </nav>
-          </div>
-        </aside>
+        <div className="flex gap-12">
 
-        {/* Mobile Category Filters */}
-        {showFilters && (
-          <div className="fixed inset-0 z-50 bg-foreground/50 sm:hidden" onClick={() => setShowFilters(false)}>
-            <div
-              className="absolute bottom-0 left-0 right-0 max-h-[60vh] overflow-y-auto rounded-t-2xl bg-card p-6"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-base font-semibold text-foreground">Categories</h3>
-                <button onClick={() => setShowFilters(false)} aria-label="Close filters">
-                  <X className="h-5 w-5 text-foreground" />
-                </button>
-              </div>
-              <div className="flex flex-col gap-1">
+          {/* ================= SIDEBAR ================= */}
+          <aside className="hidden w-60 sm:block">
+            <div className="sticky top-24">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-black">
+                Categories
+              </h3>
+
+              <div className="flex flex-col gap-3">
                 <button
-                  onClick={() => {
-                    setSelectedCategory("all");
-                    setShowFilters(false);
-                  }}
-                  className={`rounded-lg px-3 py-3 text-left text-sm transition-colors ${
+                  onClick={() => setSelectedCategory("all")}
+                  className={`text-left text-sm ${
                     selectedCategory === "all"
-                      ? "bg-primary font-medium text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted"
+                      ? "font-semibold text-black"
+                      : "text-gray-500 hover:text-black"
                   }`}
                 >
                   All Products
                 </button>
+
                 {categories.map((cat) => (
                   <button
                     key={cat.slug}
-                    onClick={() => {
-                      setSelectedCategory(cat.slug);
-                      setShowFilters(false);
-                    }}
-                    className={`rounded-lg px-3 py-3 text-left text-sm transition-colors ${
+                    onClick={() => setSelectedCategory(cat.slug)}
+                    className={`text-left text-sm ${
                       selectedCategory === cat.slug
-                        ? "bg-primary font-medium text-primary-foreground"
-                        : "text-muted-foreground hover:bg-muted"
+                        ? "font-semibold text-black"
+                        : "text-gray-500 hover:text-black"
                     }`}
                   >
                     {cat.name}
@@ -171,26 +147,28 @@ export function ProductsPageContent() {
                 ))}
               </div>
             </div>
-          </div>
-        )}
+          </aside>
 
-        {/* Products Grid */}
-        <div className="flex-1">
-          {filteredProducts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <Search className="mb-4 h-12 w-12 text-muted-foreground/50" />
-              <h3 className="text-lg font-semibold text-foreground">No products found</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Try adjusting your search or filter criteria.
-              </p>
-            </div>
-          ) : (
-            <div className="grid gap-4 grid-cols-1 min-[480px]:grid-cols-2 md:gap-6 lg:grid-cols-3">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          )}
+          {/* ================= PRODUCTS GRID ================= */}
+          <div className="flex-1">
+            {filteredProducts.length === 0 ? (
+              <div className="py-20 text-center">
+                <h3 className="text-lg font-semibold text-black">
+                  No products found
+                </h3>
+                <p className="mt-2 text-sm text-gray-500">
+                  Try adjusting your search or filter.
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-4 sm:gap-6 grid-cols-2 lg:grid-cols-3">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
     </div>
