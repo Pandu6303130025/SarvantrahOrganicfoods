@@ -5,6 +5,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { ShoppingCart, Menu, X, Search } from "lucide-react";
 import { useState } from "react";
 import { useCartItemCount } from "@/lib/cart-store";
+import Image from "next/image";
+
 
 export function Header() {
   const pathname = usePathname();
@@ -57,13 +59,18 @@ export function Header() {
 
         {/* CENTER LOGO */}
         <div className="absolute left-1/2 -translate-x-1/2">
-          <Link
-            href="/"
-            className="text-2xl md:text-3xl font-semibold tracking-[0.3em]"
-          >
-            ZYVA
-          </Link>
-        </div>
+  <Link href="/" className="block">
+  <Image
+    src="https://res.cloudinary.com/dgky6sudx/image/upload/v1771251518/IMG_2479_ltxxzp.png"
+    alt="ZYVA Logo"
+    width={740}
+    height={360}
+    priority
+    className="h-24 w-auto md:h-28 lg:h-32 object-contain"
+  />
+</Link>
+
+</div>
 
         {/* RIGHT */}
         <div className="ml-auto flex items-center gap-6">

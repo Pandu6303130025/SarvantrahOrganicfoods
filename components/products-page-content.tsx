@@ -18,23 +18,27 @@ export function ProductsPageContent() {
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [showFilters, setShowFilters] = useState(false);
 
-  // 🔥 Sync search input when URL changes
+  // Sync URL search param with input
   useEffect(() => {
     setSearchQuery(initialSearch);
   }, [initialSearch]);
 
-  // 🔥 Filter logic
+  useEffect(() => {
+    setSelectedCategory(initialCategory);
+  }, [initialCategory]);
+
+  // Filter logic
   const filteredProducts = useMemo(() => {
     let filtered = products;
 
-    // Filter by category
+    // Category filter
     if (selectedCategory !== "all") {
       filtered = filtered.filter(
         (p) => p.categorySlug === selectedCategory
       );
     }
 
-    // Filter by search
+    // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -60,7 +64,7 @@ export function ProductsPageContent() {
     <div className="bg-white">
       <div className="mx-auto max-w-7xl px-6 py-16">
 
-        {/* ================= HEADER ================= */}
+        {/* HEADER */}
         <div className="mb-14 text-center">
           <h1 className="text-4xl sm:text-5xl font-bold tracking-wide text-black">
             Our Products
@@ -72,7 +76,7 @@ export function ProductsPageContent() {
           </p>
         </div>
 
-        {/* ================= SEARCH + FILTER ================= */}
+        {/* SEARCH + FILTER */}
         <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
 
           {/* Search */}
@@ -113,7 +117,7 @@ export function ProductsPageContent() {
 
         <div className="flex gap-12">
 
-          {/* ================= SIDEBAR ================= */}
+          {/* SIDEBAR */}
           <aside className="hidden w-60 sm:block">
             <div className="sticky top-24">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-black">
@@ -121,6 +125,8 @@ export function ProductsPageContent() {
               </h3>
 
               <div className="flex flex-col gap-3">
+
+                {/* All Products */}
                 <button
                   onClick={() => setSelectedCategory("all")}
                   className={`text-left text-sm ${
@@ -132,24 +138,36 @@ export function ProductsPageContent() {
                   All Products
                 </button>
 
-                {categories.map((cat) => (
-                  <button
-                    key={cat.slug}
-                    onClick={() => setSelectedCategory(cat.slug)}
-                    className={`text-left text-sm ${
-                      selectedCategory === cat.slug
-                        ? "font-semibold text-black"
-                        : "text-gray-500 hover:text-black"
-                    }`}
-                  >
-                    {cat.name}
-                  </button>
-                ))}
+                {/* Categories List */}
+                {categories.map((cat) => {
+                  const isComingSoon = cat.status === "coming-soon";
+
+                  return (
+                    <button
+                      key={cat.slug}
+                      disabled={isComingSoon}
+                      onClick={() => {
+                        if (!isComingSoon) {
+                          setSelectedCategory(cat.slug);
+                        }
+                      }}
+                      className={`text-left text-sm ${
+                        isComingSoon
+                          ? "text-gray-400 line-through cursor-not-allowed"
+                          : selectedCategory === cat.slug
+                          ? "font-semibold text-black"
+                          : "text-gray-500 hover:text-black"
+                      }`}
+                    >
+                      {cat.name}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </aside>
 
-          {/* ================= PRODUCTS GRID ================= */}
+          {/* PRODUCTS GRID */}
           <div className="flex-1">
             {filteredProducts.length === 0 ? (
               <div className="py-20 text-center">
